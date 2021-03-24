@@ -1,0 +1,14 @@
+asyncpg==0.22.0
+certifi==2020.12.5
+cffi==1.14.5
+chardet==4.0.0
+cryptography==3.4.6
+fernet==1.0.1
+idna==2.10
+pyaes==1.6.1
+pycparser==2.20
+pycrypto==2.6.1
+requests==2.25.1
+simple-crypt==4.1.7
+typing-extensions==3.7.4.3
+urllib3==1.26.4
