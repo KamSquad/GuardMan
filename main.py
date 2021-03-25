@@ -7,7 +7,8 @@ import logging
 import os
 import json
 
-from lib.network import request, database
+from lib.network import request
+from lib.db import database
 from lib import config
 from lib.network import mserver
 
