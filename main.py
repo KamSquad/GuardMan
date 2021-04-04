@@ -8,7 +8,7 @@ import os
 import json
 
 from lib.network import request
-from lib.db import database
+from lib.db import echo
 from lib import config
 from lib.network import mserver
 
@@ -47,9 +47,9 @@ def handle_request(client):
             #                 'value': 'username'
             #                 }
             elif request_json['request'] == 'login' and 'body' in request_json:
-                res_user_id = db.check_user_exist(user_name=request_json['body'])
+                res_user_id = ldb.check_user_exist(user_name=request_json['body'])
                 if res_user_id:
-                    salt = db.gen_and_save_user_salt(user_id=res_user_id)
+                    salt = ldb.gen_and_save_user_salt(user_id=res_user_id)
                     result = request.make_answer_json(answer_code=request.answer_codes['object_created'],
                                                       body=salt)
             # USER HASH_PASS REQUEST
@@ -60,36 +60,25 @@ def handle_request(client):
             #                 }
             elif request_json['request'] == 'hash_pass' and 'body' in request_json:
                 result = None
-                check_pass_res = db.check_user_hash_pass(user_name=request_json['body']['username'],
-                                                         inp_hash_pass=request_json['body']['pass'])
+                check_pass_res = ldb.check_user_hash_pass(user_name=request_json['body']['username'],
+                                                          inp_hash_pass=request_json['body']['pass'])
                 if check_pass_res:
-                    token = db.gen_and_save_token(user_name=request_json['body']['username'])
+                    token = ldb.gen_and_save_token(user_name=request_json['body']['username'])
                     if token:
                         # success
                         result = request.make_answer_json(answer_code=request.answer_codes['object_created'],
                                                           body=token)
+                    else:
+                        # fail
+                        result = request.make_answer_json(answer_code=request.answer_codes['failed'],
+                                                          body='create token error')
                 if result is None:
                     # fail
                     result = request.make_answer_json(answer_code=request.answer_codes['failed'],
                                                       body='password incorrect')
             else:
-                #  /\/\/\/\/\/\/\/\/\ BAD CODE /\/\/\/\/\/\
-                # The end.
-                # fail # \/\/\/\/\/\/ GOOD CODE \/\/\/\/\/\/
-                # g
-                # o
-                # o
-                # d
-
-                result \
-                    = request\
-                    .make_answer_json(
-                    answer_code = request.answer_codes[
-                        'failed'
-                    ],
-                                                  body = 'request format error'
-                    )
-                # fail # /\/\/\/\/\/\ GOOD CODE /\/\/\/\/\/\
+                result = request.make_answer_json(answer_code=request.answer_codes['failed'],
+                                                  body='request format error')
         else:
             # fail
             result = request.make_answer_json(answer_code=request.answer_codes['failed'],
@@ -106,6 +95,10 @@ def handle_request(client):
 
 if __name__ == '__main__':
     logging.basicConfig(level='DEBUG')
-    db = database.Database()
+    # db = database.Database()
+    ldb = echo.EchoDB(db_host=config.value['db']['host'],
+                      db_name=config.value['db']['db_name'],
+                      db_user=config.value['db']['db_user'],
+                      db_pass=config.value['db']['db_pass'])
     mserver.micro_server(SERVER_ADDRESS, handle_request)
 
