@@ -38,7 +38,7 @@ def handle_request(client):
         request_json = json.loads(request_obj.decode('utf-8'))
         # print(request_obj)
 
-        route_function = lib.routes.search_route(input_dictionary=request_json)
+        route_function = lib.map.search_route(input_dictionary=request_json)
         if route_function:
             result = route_function(request_json, ldb)
         else:

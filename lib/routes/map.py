@@ -1,4 +1,4 @@
-from lib.functions import test_func, login_func, hash_pass_func
+from lib.routes.functions import test_func, login_func, hash_pass_func
 from lib.network import schemas
 
 routes = {'test': test_func,
