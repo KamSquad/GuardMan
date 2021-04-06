@@ -12,7 +12,7 @@ from Crypto import Random
 try:
     conf = config.JsonConfig('./config.json')
 except:
-    conf = config.JsonConfig('./../config.json')
+    conf = config.JsonConfig('../../config.json')
 crypt_key = conf.value['crypt']['init_key']
 key_len = conf.value['crypt']['key_len']
 
@@ -67,4 +67,3 @@ if __name__ == '__main__':
 
         enc = '05J2JqYzGRG/bYgD7dQp470e2lWVyUHSLuRct+ioAIA='
         print('test_crypt:', enc, decrypt_password(enc))
-

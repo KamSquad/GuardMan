@@ -1,8 +1,7 @@
 from sqlalchemy.orm.exc import NoResultFound
 
 from lib.db import base as dbm
-from lib import creds
-from lib import crypt_pass
+from lib.enc import creds, crypt_pass
 
 
 class EchoDB(dbm.DatabaseInstance):
@@ -101,4 +100,3 @@ class EchoDB(dbm.DatabaseInstance):
             return user_token
         else:
             return False
-
