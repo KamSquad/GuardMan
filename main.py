@@ -12,6 +12,7 @@ from lib.network import net_request
 from lib.db import echo
 from lib import config
 from lib.network import mserver
+import f_modules
 
 config = config.JsonConfig('./config.json')
 log = logging.getLogger(__name__)
@@ -34,11 +35,14 @@ def handle_request(client):
         if not request_obj:
             break
 
-        # print('ok')
+        # get json object
         request_json = json.loads(request_obj.decode('utf-8'))
         # print(request_obj)
 
-        route_function = r_map.search_route(input_dictionary=request_json)
+        # check and find route by schema
+        route_function = r_map.search_route(input_dictionary=request_json,
+                                            routes=f_modules.routes,
+                                            request_schemas=f_modules.schemas)
         if route_function:
             result = route_function(request_json, ldb)
         else:

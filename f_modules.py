@@ -1,3 +1,5 @@
+from schema import Schema, And, Use
+
 from lib.network import net_request
 
 
@@ -40,3 +42,21 @@ def hash_pass_func(*args):
         result = net_request.make_answer_json(answer_code=net_request.answer_codes['failed'],
                                               body='password incorrect')
     return result
+
+
+routes = {'test': test_func,
+          'login': login_func,
+          'hash_pass': hash_pass_func}
+
+
+schemas = {'test': Schema({'request': 'test'}),
+           'login': Schema({'request': 'login',
+                            'body': {
+                                'username': And(Use(str))}
+                            }),
+           'hash_pass': Schema({'request': 'hash_pass',
+                                'body': {
+                                    'username': And(Use(str)),
+                                    'pass': And(Use(str))}
+                                })
+           }
