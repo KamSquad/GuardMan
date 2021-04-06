@@ -7,7 +7,7 @@ import logging
 import os
 import json
 
-import lib.routes
+from lib.routes import r_map
 from lib.network import net_request
 from lib.db import echo
 from lib import config
@@ -38,7 +38,7 @@ def handle_request(client):
         request_json = json.loads(request_obj.decode('utf-8'))
         # print(request_obj)
 
-        route_function = lib.map.search_route(input_dictionary=request_json)
+        route_function = r_map.search_route(input_dictionary=request_json)
         if route_function:
             result = route_function(request_json, ldb)
         else:
