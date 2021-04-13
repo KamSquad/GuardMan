@@ -7,23 +7,15 @@ from lib.enc import creds, crypt_pass
 
 class EchoDB(dbm.DatabaseInstance):
     def check_user_token(self, token):
-        """
-        Check user token and return role info
-        :param token:
-        :return:
-        """
         try:
-            # get user id
-            user_auth_res = self.session.query(dbm.UserAuth).filter_by(
+            # get token permission by view
+            user_role_res = self.session.query(dbm.TokenPerm).filter_by(
                 token=token).one()
-            # get user role
-            user_login_res = self.session.query(dbm.UserLogin).filter_by(
-                user_id=user_auth_res.user_id).one()
-            # get user role table
-            user_role_res = self.session.query(dbm.UserRole).filter_by(
-                role_id=user_login_res.role_id).one()
-            # prepare db result
+            # prepare result
             user_role_res_dict = dbm.make_dict_result(user_role_res)
+            # remove token field
+            del user_role_res_dict['token']
+            # return
             return user_role_res_dict
         except NoResultFound:
             return None
