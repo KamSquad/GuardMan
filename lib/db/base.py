@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from lib.db.setup import Base, UserRole, UserAuth, UserSalt, UserLogin, UserInfo
+from lib.db.setup import Base, UserRole, UserAuth, UserSalt, UserLogin, UserInfo, TokenPerm
 
 
 class DatabaseInstance:
