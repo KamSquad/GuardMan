@@ -28,7 +28,7 @@ class EchoDB(dbm.DatabaseInstance):
         """
         try:
             user_id_res = self.session.query(dbm.UserLogin).filter_by(
-                    username=user_name).one()
+                username=user_name).one()
             # prepare db result
             user_id_res_dict = dbm.make_dict_result(user_id_res)
             return user_id_res_dict['user_id']
