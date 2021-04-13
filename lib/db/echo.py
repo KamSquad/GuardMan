@@ -1,4 +1,5 @@
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 from lib.db import base as dbm
 from lib.enc import creds, crypt_pass
@@ -90,13 +91,31 @@ class EchoDB(dbm.DatabaseInstance):
             return False
 
     def gen_and_save_token(self, user_name):
+        """
+        Generate unique token for each user.
+        Insert or update new token table object.
+        :param user_name: target username
+        :return: :type: str
+        """
         user_id = self.check_user_exist(user_name)
         if user_id:
-            user_token = creds.gen_uid()
-            user_token_obj = dbm.UserAuth(user_id=user_id,
-                                          token=user_token)
-            self.session.merge(user_token_obj)
+            user_token = creds.gen_uid()  # generate unique token
+            user_token_obj = {'user_id': user_id, 'token': user_token}  # basic input save dict
+            exclude_key = ['user_id']  # exclude keys
+            exclude_obj = [dbm.UserAuth.user_id]  # exclude keys as objects
+            # make input dict with exclude keys
+            user_token_obj_conflict = {k: v for k, v in user_token_obj.items()
+                                       if k not in exclude_key}
+            # insert or update statement
+            statement = pg_insert(dbm.UserAuth).values(
+                 user_token_obj).on_conflict_do_update(index_elements=exclude_obj,
+                                                       set_=user_token_obj_conflict)
+            # execute changes
+            self.engine.execute(statement)
+            # save changes
             self.session.commit()
+            # return new token
             return user_token
         else:
+            # return if user not found
             return False
