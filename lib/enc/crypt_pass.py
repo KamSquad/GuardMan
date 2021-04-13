@@ -12,7 +12,7 @@ from Crypto import Random
 try:
     conf = config.JsonConfig('./config.json')
 except:
-    conf = config.JsonConfig('../../config.json')
+    conf = config.JsonConfig('../config.json')
 crypt_key = conf.value['crypt']['init_key']
 key_len = conf.value['crypt']['key_len']
 
